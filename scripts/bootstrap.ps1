@@ -1,20 +1,20 @@
-# bootstrap.ps1
-
-# Allow script execution (just in case)
+<powershell>
+# Allow script execution
 Set-ExecutionPolicy Unrestricted -Force
 
-# Install IIS
+# Install IIS Web Server
 Install-WindowsFeature -Name Web-Server -IncludeManagementTools
 
-# Add custom index.html
+# Create a default web page
+New-Item -Path "C:\inetpub\wwwroot\index.html" -ItemType File -Force
 Set-Content -Path "C:\inetpub\wwwroot\index.html" -Value "<h1>Hello from Amruta's Terraform IIS</h1>"
 
-# Start SSM Agent (safe for AMI with preinstalled agent)
+# Start SSM Agent if already present
 Try {
     Start-Service AmazonSSMAgent -ErrorAction Stop
     Write-Output "SSM Agent started."
 } Catch {
-    Write-Output "SSM Agent not found. Downloading and installing..."
+    Write-Output "SSM Agent not found. Installing..."
 
     $ssmUrl = "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/Windows/SSMAgentSetup.exe"
     $dest = "$env:TEMP\SSMAgentSetup.exe"
@@ -25,6 +25,7 @@ Try {
     Write-Output "SSM Agent installed and started."
 }
 
-# Set SSM Agent to start automatically
+# Set SSM agent to auto start
 Set-Service -Name AmazonSSMAgent -StartupType Automatic
+</powershell>
 
