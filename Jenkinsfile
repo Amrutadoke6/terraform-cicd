@@ -4,8 +4,8 @@ pipeline {
   environment {
     AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
-    TF_VAR_db_user        = credentials('db-user')
-    TF_VAR_db_pass        = credentials('db-pass')
+    TF_VAR_db_user        = credentials('db_user')      
+    TF_VAR_db_pass        = credentials('db_pass')      
     TF_VAR_region         = 'us-east-2'
   }
 
@@ -45,10 +45,10 @@ pipeline {
 
   post {
     failure {
-      echo "Terraform CICD pipeline failed ❌"
+      echo "Terraform CICD pipeline failed "
     }
     success {
-      echo "Terraform infrastructure created successfully ✅"
+      echo "Terraform infrastructure created successfully "
     }
   }
 }
