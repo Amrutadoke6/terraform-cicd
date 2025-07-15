@@ -77,14 +77,19 @@ resource "aws_route_table_association" "public" {
 # -----------------------------------------------------
 resource "aws_security_group" "ec2_sg" {
   name        = "${var.project}-ec2-sg"
-  description = "Allow HTTP"
+  description = "Allow HTTP and RDP"
   vpc_id      = aws_vpc.main.id
+
+  # ✅ Allow HTTP
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -92,6 +97,7 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 
 resource "aws_security_group" "rds_sg" {
   name        = "${var.project}-rds-sg"
@@ -159,15 +165,41 @@ data "aws_ami" "windows" {
   }
 }
 
+resource "aws_security_group" "rdp_sg" {
+  name        = "${var.project}-rdp-sg"
+  description = "Allow RDP access"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # we can  Replace with your IP for security reason
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_launch_template" "web" {
-  name_prefix            = "${var.project}-tpl"
-  image_id               = data.aws_ami.windows.id
-  instance_type          = "t3.medium"
-  user_data              = base64encode(file("./scripts/bootstrap.ps1"))
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  name_prefix   = "${var.project}-tpl"
+  image_id      = data.aws_ami.windows.id
+  instance_type = "t3.medium"
+  user_data     = base64encode(file("./scripts/bootstrap.ps1"))
+
+  vpc_security_group_ids = [
+    aws_security_group.ec2_sg.id,
+    aws_security_group.rdp_sg.id
+  ]
+
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_profile.name
   }
+
   tag_specifications {
     resource_type = "instance"
     tags = {
@@ -175,7 +207,6 @@ resource "aws_launch_template" "web" {
     }
   }
 }
-
 resource "aws_autoscaling_group" "web_asg" {
   desired_capacity    = 2
   max_size            = 2
@@ -235,7 +266,7 @@ resource "aws_autoscaling_attachment" "asg_attach" {
 # 💾 RDS + Secrets
 # -----------------------------------------------------
 resource "aws_secretsmanager_secret" "rds" {
-  name = "${var.project}-rds-credentials"
+  name = "${var.project}-rds-credentials-v2"
 }
 
 resource "aws_secretsmanager_secret_version" "rds_secret" {
@@ -255,17 +286,17 @@ resource "aws_db_subnet_group" "db" {
 resource "aws_db_instance" "sql" {
   identifier             = "${var.project}-rds-sql"
   engine                 = "sqlserver-ex"
-  license_model          = "license-included"            
+  license_model          = "license-included"
   instance_class         = "db.t3.micro"
   allocated_storage      = 20
   storage_encrypted      = true
   multi_az               = false
   publicly_accessible    = false
- #db_name                = "mydb"
   username               = var.db_user
   password               = var.db_pass
-  db_subnet_group_name = aws_db_subnet_group.db.name          
+  db_subnet_group_name   = aws_db_subnet_group.db.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  skip_final_snapshot    = true
 }
 
 # -----------------------------------------------------
