@@ -294,7 +294,7 @@ resource "aws_autoscaling_attachment" "asg_attach" {
 # 💾 RDS + Secrets
 # -----------------------------------------------------
 resource "aws_secretsmanager_secret" "rds" {
-  name = "${var.project}-rds-credentials-v4"
+  name = "${var.project}-rds-credentials-v5"
 }
 
 resource "aws_secretsmanager_secret_version" "rds_secret" {
