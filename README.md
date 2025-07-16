@@ -19,17 +19,17 @@ This project automates the provisioning of a full AWS infrastructure using **Ter
 # Directory Structure
 
 terraform-cicd/
-├── .gitignore
-├── .terraform.lock.hcl         # Terraform dependency lock
-├── Jenkinsfile                 # Main CI/CD pipeline
-├── Jenkinsfile-destroy         # Pipeline for `terraform destroy`
-├── README.md                   #  You are here,Read this to understand the project
-├── main.tf                     # Main Terraform config
-├── outputs.tf                  # Output variables
-├── terraform.tfvars            # Custom variable values
-├── variables.tf                # Input variable definitions
-├── scripts/
-│   └── bootstrap.ps1           # EC2 Windows init script
+1. .gitignore
+2. .terraform.lock.hcl   # Terraform dependency lock
+3. Jenkinsfile           # Main CI/CD pipeline
+4. Jenkinsfile-destroy   # Pipeline for `terraform destroy`
+5. README.md             #  You are here,Read this to understand the project
+6. main.tf               # Main Terraform config
+7. outputs.tf            # Output variables
+8. terraform.tfvars      # Custom variable values
+9. variables.tf          # Input variable definitions
+10. scripts/bootstrap.ps1   # EC2 Windows init script
+ 
 
 
 #Jenkins Pipeline Steps
