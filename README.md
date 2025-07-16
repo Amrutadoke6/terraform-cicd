@@ -1,7 +1,6 @@
 Terraform CI/CD on AWS with Jenkins
 
 This project automates the provisioning of a full AWS infrastructure using **Terraform** and manages deployments using Jenkins CI/CD pipelines.
-
 # Features
 
 -  VPC with public/private subnets
@@ -29,8 +28,6 @@ terraform-cicd/
 8. terraform.tfvars      # Custom variable values
 9. variables.tf          # Input variable definitions
 10. scripts/bootstrap.ps1   # EC2 Windows init script
- 
-
 
 #Jenkins Pipeline Steps
 
