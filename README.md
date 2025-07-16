@@ -33,21 +33,25 @@ terraform-cicd/
 
 
 #Jenkins Pipeline Steps
-1.Checkout Code
-.2Terraform Init
-3.Format & Validate
-4.Terraform Plan
-5.Apply with approval
+
+1. Checkout Code
+2. Terraform Init
+3. Format & Validate
+4. Terraform Plan
+5. Apply with approval
 
 #Jenkinsfile-destroy
-1.Checkout Code
-.2Terraform Init
-3.'Terraform Plan Destroy
-4.terraform destroy
+
+1. Checkout Code
+2. Terraform Init
+3. Terraform Plan Destroy
+4. terraform destroy
 
 
 #Test IIS Setup (via SSM)
 # On EC2 via Session Manager
-Get-Service W3SVC
-Get-Website
-Get-Content "C:\inetpub\wwwroot\index.html"
+1.Get-Service W3SVC
+
+2.Get-Website
+
+3.Get-Content "C:\inetpub\wwwroot\index.html"
