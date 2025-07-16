@@ -48,8 +48,7 @@ terraform-cicd/
 4. terraform destroy
 
 
-#Test IIS Setup (via SSM)
-# On EC2 via Session Manager
+#Test IIS Setup (via SSM) On EC2 via Session Manager
 1.Get-Service W3SVC
 
 2.Get-Website
