@@ -1,5 +1,5 @@
 # -----------------------------------------------------
-# 🔧 PROVIDERS & BACKEND CONFIG (FROM providers.tf & backend.tf)
+# PROVIDERS & BACKEND CONFIG (FROM providers.tf & backend.tf)
 # -----------------------------------------------------
 provider "aws" {
   region = var.region
@@ -16,7 +16,7 @@ terraform {
 }
 
 # -----------------------------------------------------
-# 🌐 VPC + SUBNETS + ROUTES (FROM modules/vpc)
+# VPC + SUBNETS + ROUTES (FROM modules/vpc)
 # -----------------------------------------------------
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -101,14 +101,14 @@ resource "aws_route_table_association" "private" {
 }
 
 # -----------------------------------------------------
-# 🛡️ SECURITY GROUPS (partial from modules/security)
+#  SECURITY GROUPS 
 # -----------------------------------------------------
 resource "aws_security_group" "ec2_sg" {
   name        = "${var.project}-ec2-sg"
   description = "Allow HTTP and RDP"
   vpc_id      = aws_vpc.main.id
 
-  # ✅ Allow HTTP
+  # Allow HTTP
   ingress {
     from_port   = 80
     to_port     = 80
@@ -146,7 +146,7 @@ resource "aws_security_group" "rds_sg" {
 }
 
 # -----------------------------------------------------
-# 🧠 IAM Role for EC2 to access SSM & Secrets (from ssm_secrets.tf)
+#  IAM Role for EC2 to access SSM & Secrets (from ssm_secrets.tf)
 # -----------------------------------------------------
 resource "aws_iam_role" "ec2_ssm_role" {
   name = "${var.project}-ec2-ssm-role"
@@ -178,7 +178,7 @@ resource "aws_iam_role_policy_attachment" "secrets" {
 }
 
 # -----------------------------------------------------
-# 💻 COMPUTE: Launch Template + ASG + ALB (with SSM Agent for Fleet Manager)
+#  COMPUTE: Launch Template + ASG + ALB (with SSM Agent for Fleet Manager)
 # -----------------------------------------------------
 data "aws_ami" "windows" {
   most_recent = true
@@ -291,7 +291,7 @@ resource "aws_autoscaling_attachment" "asg_attach" {
 }
 
 # -----------------------------------------------------
-# 💾 RDS + Secrets
+#  RDS + Secrets
 # -----------------------------------------------------
 resource "aws_secretsmanager_secret" "rds" {
   name = "${var.project}-rds-credentials-v8"
@@ -328,7 +328,7 @@ resource "aws_db_instance" "sql" {
 }
 
 # -----------------------------------------------------
-# 🔍 CloudWatch Monitoring
+# CloudWatch Monitoring
 # -----------------------------------------------------
 resource "aws_cloudwatch_log_group" "web_logs" {
   name              = "/${var.project}/app"
